@@ -1,0 +1,247 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "West US"
+    },
+    "loadBalancerName": {
+      "type": "string",
+      "defaultValue": "BIGIPLoadBlancer",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "dnsNameForPublicIP": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+      }
+    },
+    "dnsNameForPublicIP2": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS Name for the Public IP used to access the Application."
+      }
+    }
+  },
+  "variables": {
+    "lbID": "[resourceId('Microsoft.Network/loadBalancers',parameters('loadBalancerName'))]",
+    "frontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/loadBalancerFrontEnd')]",
+    "frontEndIPConfigID2": "[concat(variables('lbID'),'/frontendIPConfigurations/loadBalancerFrontEnd2')]",
+    "loadBalancerBackEnd": "[concat(variables('lbID'),'/backendAddressPools/loadBalancerBackEnd')]",
+    "App1_Probe_80": "[concat(variables('lbID'),'/probes/App1_probe_80')]",
+    "App1_Probe_443": "[concat(variables('lbID'),'/probes/App1_probe_443')]",
+    "publicIPID": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('dnsNameForPublicIP'))]",
+    "publicIPID2": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('dnsNameForPublicIP2'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[parameters('dnsNameForPublicIP2')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "displayName": "PublicIPAddressApp"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('dnsNameForPublicIP2')]"
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+      ],
+      "location": "[parameters('location')]",
+      "name": "[parameters('loadBalancerName')]",
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "loadBalancerFrontEnd",
+            "properties": {
+              "publicIPAddress": {
+                "id": "[variables('publicIPID')]"
+              }
+            }
+          },
+          {
+            "name": "loadBalancerFrontEnd2",
+            "properties": {
+              "publicIPAddress": {
+                "id": "[variables('publicIPID2')]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "loadBalancerBackEnd"
+          }
+        ],
+        "inboundNatRules": [
+          {
+            "name": "guimgt0",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 8441,
+              "backendPort": 443,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "guimgt1",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 8442,
+              "backendPort": 443,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "guimgt2",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 8443,
+              "backendPort": 443,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "guimgt3",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 8444,
+              "backendPort": 443,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "sshmgt0",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 8221,
+              "backendPort": 22,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "sshmgt1",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 8222,
+              "backendPort": 22,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "sshmgt2",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 8223,
+              "backendPort": 22,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "sshmgt3",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 8224,
+              "backendPort": 22,
+              "enableFloatingIP": false
+            }
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "App1_lbrule_80",
+            "properties": {
+              "backendAddressPool": {
+                "id": "[variables('loadBalancerBackEnd')]"
+              },
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID2')]"
+              },
+              "backendPort": 8080,
+              "frontendPort": 80,
+              "protocol": "TCP",
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 15,
+              "probe": {
+                "id": "[variables('App1_Probe_80')]"
+              }
+            }
+          },
+          {
+            "name": "App1_lbrule_443",
+            "properties": {
+              "backendAddressPool": {
+                "id": "[variables('loadBalancerBackEnd')]"
+              },
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID2')]"
+              },
+              "backendPort": 8440,
+              "frontendPort": 443,
+              "protocol": "TCP",
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[variables('App1_Probe_443')]"
+              }
+            }
+          }
+        ],
+        "probes": [
+          {
+            "name": "App1_probe_80",
+            "properties": {
+              "port": 80,
+              "protocol": "TCP",
+              "intervalInSeconds": 15,
+              "numberOfProbes": 5
+            }
+          },
+          {
+            "name": "App1_probe_443",
+            "properties": {
+              "port": 443,
+              "protocol": "TCP",
+              "intervalInSeconds": 15,
+              "numberOfProbes": 5
+            }
+          }
+        ]
+      },
+      "type": "Microsoft.Network/loadBalancers"
+    }
+  ]
+}

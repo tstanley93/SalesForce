@@ -1,0 +1,30 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "newStorageAccountName": {
+      "value": "sfdeploy2"
+    },
+    "location": {
+      "value": "westus"
+    },
+    "virtualNetworkResourceGroup": {
+      "value": "Default-Networking"
+    },
+    "virtualNetworkName": {
+      "value": "EIS-VNet"
+    },
+    "subnetName": {
+      "value": "EIS-Server"
+    },
+    "adminUsername": {
+      "value": "azureuser"
+    },
+    "dnsNameForPublicIP": {
+      "value": "sfdeploy2"
+    },
+    "adminPassword": {
+      "value": "Junct10n"
+    }
+  }
+}
