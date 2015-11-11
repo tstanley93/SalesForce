@@ -32,7 +32,7 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_D13_V2",
+      "defaultValue": "Standard_D3_V2",
       "metadata": {
         "description": ""
       }
@@ -98,7 +98,7 @@
     "nicName0": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('nicName'), 0))]",
     "nicName1": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('nicName'), 1))]",
     "nicName2": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('nicName'), 2))]",
-    "nicName3":"[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('nicName'), 3))]"
+    "nicName3": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('nicName'), 3))]"
   },
   "resources": [
     {
@@ -119,12 +119,42 @@
       "name": "securityGroup1",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', parameters('nicName'), 0)]",
-        "[concat('Microsoft.Network/networkInterfaces/', parameters('nicName'), 1)]",
-        "[concat('Microsoft.Network/networkInterfaces/', parameters('nicName'), 2)]",
-        "[concat('Microsoft.Network/networkInterfaces/', parameters('nicName'), 3)]"
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'), 0)]",
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'), 1)]",
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'), 2)]",
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'), 3)]"
       ],
       "properties": {
+        "securityRules": [
+          {
+            "name": "ui_rule",
+            "properties": {
+              "description": "",
+              "priority": 101,
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "443",
+              "protocol": "TCP",
+              "direction": "Inbound",
+              "access": "Allow"
+            }
+          },
+          {
+            "name": "ssh_rule",
+            "properties": {
+              "description": "",
+              "priority": 102,
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "22",
+              "protocol": "TCP",
+              "direction": "Inbound",
+              "access": "Allow"
+            }
+          }
+        ],
         "networkInterfaces": [
           {
             "id": "[variables('nicName0')]"
@@ -137,120 +167,6 @@
           },
           {
             "id": "[variables('nicName3')]"
-          }
-        ],
-        "securityRules": [
-          {
-            "name": "ui_rule_1",
-            "properties": {
-              "description": "",
-              "priority": 101,
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*",
-              "destinationPortRange": "8441",
-              "protocol": "TCP",
-              "direction": "Inbound",
-              "access": "Allow"
-            }
-          },
-          {
-            "name": "ui_rule_2",
-            "properties": {
-              "description": "",
-              "priority": 102,
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*",
-              "destinationPortRange": "8442",
-              "protocol": "TCP",
-              "direction": "Inbound",
-              "access": "Allow"
-            }
-          },
-          {
-            "name": "ui_rule_3",
-            "properties": {
-              "description": "",
-              "priority": 103,
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*",
-              "destinationPortRange": "8443",
-              "protocol": "TCP",
-              "direction": "Inbound",
-              "access": "Allow"
-            }
-          },
-          {
-            "name": "ui_rule_4",
-            "properties": {
-              "description": "",
-              "priority": 104,
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*",
-              "destinationPortRange": "8444",
-              "protocol": "TCP",
-              "direction": "Inbound",
-              "access": "Allow"
-            }
-          },
-          {
-            "name": "ssh_rule_1",
-            "properties": {
-              "description": "",
-              "priority": 111,
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*",
-              "destinationPortRange": "8221",
-              "protocol": "TCP",
-              "direction": "Inbound",
-              "access": "Allow"
-            }
-          },
-          {
-            "name": "ssh_rule_2",
-            "properties": {
-              "description": "",
-              "priority": 112,
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*",
-              "destinationPortRange": "8222",
-              "protocol": "TCP",
-              "direction": "Inbound",
-              "access": "Allow"
-            }
-          },
-          {
-            "name": "ssh_rule_3",
-            "properties": {
-              "description": "",
-              "priority": 113,
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*",
-              "destinationPortRange": "8223",
-              "protocol": "TCP",
-              "direction": "Inbound",
-              "access": "Allow"
-            }
-          },
-          {
-            "name": "ssh_rule_4",
-            "properties": {
-              "description": "",
-              "priority": 114,
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*",
-              "destinationPortRange": "8224",
-              "protocol": "TCP",
-              "direction": "Inbound",
-              "access": "Allow"
-            }
           }
         ]
       }

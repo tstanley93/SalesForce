@@ -4,7 +4,11 @@
   "parameters": {
     "location": {
       "type": "string",
-      "defaultValue": "West US"
+      "defaultValue": "westus"
+    },
+    "securityGroupName": {
+      "type": "string",
+      "defaultValue": "securityGroup1"
     },
     "loadBalancerName": {
       "type": "string",
@@ -28,6 +32,7 @@
   },
   "variables": {
     "lbID": "[resourceId('Microsoft.Network/loadBalancers',parameters('loadBalancerName'))]",
+    "nsgID": "[resourceID('Microsoft.Network/networkSecurityGroups', parameters('securityGroupName'))]",
     "frontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/loadBalancerFrontEnd')]",
     "frontEndIPConfigID2": "[concat(variables('lbID'),'/frontendIPConfigurations/loadBalancerFrontEnd2')]",
     "loadBalancerBackEnd": "[concat(variables('lbID'),'/backendAddressPools/loadBalancerBackEnd')]",
@@ -53,9 +58,73 @@
       }
     },
     {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('securityGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "ui_rule",
+            "properties": {
+              "description": "",
+              "priority": 101,
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "443",
+              "protocol": "TCP",
+              "direction": "Inbound",
+              "access": "Allow"
+            }
+          },
+          {
+            "name": "ssh_rule",
+            "properties": {
+              "description": "",
+              "priority": 102,
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "22",
+              "protocol": "TCP",
+              "direction": "Inbound",
+              "access": "Allow"
+            }
+          },
+          {
+            "name": "app1_80_rule",
+            "properties": {
+              "description": "",
+              "priority": 201,
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "8080",
+              "protocol": "TCP",
+              "direction": "Inbound",
+              "access": "Allow"
+            }
+          },
+          {
+            "name": "app1_443_rule",
+            "properties": {
+              "description": "",
+              "priority": 202,
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "8440",
+              "protocol": "TCP",
+              "direction": "Inbound",
+              "access": "Allow"
+            }
+          }
+        ]
+      }
+    },
+    {
       "apiVersion": "2015-06-15",
-      "dependsOn": [
-      ],
       "location": "[parameters('location')]",
       "name": "[parameters('loadBalancerName')]",
       "properties": {
@@ -224,7 +293,7 @@
           {
             "name": "App1_probe_80",
             "properties": {
-              "port": 80,
+              "port": 8080,
               "protocol": "TCP",
               "intervalInSeconds": 15,
               "numberOfProbes": 5
@@ -233,7 +302,7 @@
           {
             "name": "App1_probe_443",
             "properties": {
-              "port": 443,
+              "port": 8440,
               "protocol": "TCP",
               "intervalInSeconds": 15,
               "numberOfProbes": 5

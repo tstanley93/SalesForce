@@ -2,14 +2,11 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "location": {
-      "value": "westus"
-    },
     "dnsNameForPublicIP": {
-      "value": "sfdeploy2"
+      "value": "sfdeploy5"
     },
     "dnsNameForPublicIP2": {
-      "value": "sfapp1"
+      "value": "sfapp5"
     }
   }
 }
