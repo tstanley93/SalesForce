@@ -3,10 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "dnsNameForPublicIP": {
-      "value": "sfdeploy5"
+      "value": null
     },
     "dnsNameForPublicIP2": {
-      "value": "sfapp5"
+      "value": null
     }
   }
 }

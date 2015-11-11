@@ -118,12 +118,6 @@
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "securityGroup1",
       "location": "[parameters('location')]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'), 0)]",
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'), 1)]",
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'), 2)]",
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'), 3)]"
-      ],
       "properties": {
         "securityRules": [
           {
@@ -153,20 +147,6 @@
               "direction": "Inbound",
               "access": "Allow"
             }
-          }
-        ],
-        "networkInterfaces": [
-          {
-            "id": "[variables('nicName0')]"
-          },
-          {
-            "id": "[variables('nicName1')]"
-          },
-          {
-            "id": "[variables('nicName2')]"
-          },
-          {
-            "id": "[variables('nicName3')]"
           }
         ]
       }
@@ -198,9 +178,13 @@
         "count": "[parameters('numberOfInstances')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Network/loadBalancers/', parameters('loadBalancerName'))]"
+        "[concat('Microsoft.Network/loadBalancers/', parameters('loadBalancerName'))]",
+        "[concat('Microsoft.Network/networkSecurityGroups/', 'securityGroup1')]"
       ],
       "properties": {
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups/', 'securityGroup1')]"
+        },
         "ipConfigurations": [
           {
             "name": "ipconfig1",
