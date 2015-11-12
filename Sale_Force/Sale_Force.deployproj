@@ -32,6 +32,8 @@
       <Visible>False</Visible>
     </None>
     <None Include="Scripts\SalesForce_LB_Deployment.ps1" />
+    <None Include="Templates\2A_SalesForce_ILB_Deployment.json" />
+    <None Include="Templates\2A_SalesForce_ILB_Deployment.param.json" />
     <None Include="Templates\SalesForce_App-Add_Deployment.param.json" />
     <None Include="Templates\SalesForce_App-Add_Deployment_Template_v2.json" />
     <None Include="Templates\SalesForce_LB_Deployment.json" />
