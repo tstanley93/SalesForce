@@ -3,28 +3,28 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "newStorageAccountName": {
-      "value": null
+      "value": "sfdep2"
     },
     "location": {
-      "value": null
+      "value": "westus"
     },
     "virtualNetworkResourceGroup": {
-      "value": null
+      "value": "Default-Networking"
     },
     "virtualNetworkName": {
-      "value": null
+      "value": "EIS-VNet"
     },
     "subnetName": {
-      "value": null
+      "value": "EIS-Server"
     },
     "adminUsername": {
-      "value": null
+      "value": "azureuser"
     },
     "dnsNameForPublicIP": {
-      "value": null
+      "value": "sfdep2"
     },
     "adminPassword": {
-      "value": null
+      "value": "Junct10n"
     }
   }
 }
